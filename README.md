@@ -2,7 +2,7 @@
 
 A classic **Doodle Jump** game implementation in Java with support for both **Single Player** and **Multiplayer** modes. The game features platform jumping mechanics, increasing difficulty levels, sound effects, and network-based multiplayer gameplay.
 
-## 🎮 Features
+## Features
 
 ### Single Player Mode
 - Jump across platforms to increase your score
@@ -26,7 +26,7 @@ A classic **Doodle Jump** game implementation in Java with support for both **Si
 - **Collision Detection**: Platform-player and boundary collision handling
 - **Audio Effects**: Jump and platform landing sounds
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Doodle Jump/
@@ -50,7 +50,7 @@ Doodle Jump/
 
 ```
 
-## 🎯 Game Constants & Configuration
+## Game Constants & Configuration
 
 ### Window
 - **Width**: 400 pixels
@@ -68,7 +68,7 @@ Doodle Jump/
 - **Max Players**: 2
 - **Network Protocol**: Socket-based TCP
 
-## 🏗️ Architecture
+## Architecture
 
 ### Core Classes
 
@@ -110,7 +110,7 @@ Doodle Jump/
 - Audio playback utility
 - Loads and plays WAV files
 
-## 🎮 How to Play
+## How to Play
 
 ### Single Player
 1. Run the application
@@ -122,13 +122,13 @@ Doodle Jump/
 ### Multiplayer
 1. Run the application twice on different machines/terminals
 2. First instance: Select **"Multiplayer"** → **"Host Game"**
-   - Server will display: `🎮 Doodle Jump Server started on port 12345`
+   - Server will display: ` oodle Jump Server started on port 12345`
 3. Second instance: Select **"Multiplayer"** → **"Join Game"**
    - Enter the host machine's IP address when prompted
 4. Both players control their character independently
 5. First to fall loses!
 
-## 🛠️ Building & Running
+## Building & Running
 
 ### Prerequisites
 - **Java Development Kit (JDK)** 8 or higher
@@ -157,7 +157,7 @@ java -cp src Main
 # Enter host IP address when prompted
 ```
 
-## 🎨 Rendering
+## Rendering
 
 ### Player
 - Color: Light Blue (RGB: 100, 100, 200)
@@ -170,7 +170,7 @@ java -cp src Main
 ### Background
 - Color: White
 
-## 🔊 Audio
+## Audio
 
 The game includes sound effects for:
 - **jump.wav** - Player jump sound
@@ -178,7 +178,7 @@ The game includes sound effects for:
 
 Sounds are stored in the `src/Sounds/` directory.
 
-## 🌐 Networking Details
+## Networking Details
 
 ### Server (Host)
 - Listens on port 12345
@@ -192,21 +192,21 @@ Sounds are stored in the `src/Sounds/` directory.
 - Sends local player input to server
 - Renders opponent's position from server updates
 
-## 📊 Difficulty System
+## Difficulty System
 
 - Starts at level 1
 - Increases as score progresses
 - Affects platform generation and enemy behavior
 - Gradually increases challenge throughout the game
 
-## 🐛 Known Limitations
+## Known Limitations
 
 - Multiplayer requires manual IP address entry
 - Network synchronization is real-time (no lag compensation)
 - Maximum 2 players per session
 - No persistent score database
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 - Add more than 2 players support
 - Implement power-ups and special platforms
@@ -217,17 +217,9 @@ Sounds are stored in the `src/Sounds/` directory.
 - Mobile app version
 - Automated server discovery (mDNS/Bonjour)
 
-## 📝 License
 
-This project is part of an educational game development exercise.
-
-## 👨‍💻 Author
+## Author
 
 **MD Kawsar** (mdkawsar-dev)
 
 ---
-
-**Last Updated**: 2026  
-**Total Lines of Code**: ~1,200 lines of Java
-
-Enjoy the game! 🎮✨
