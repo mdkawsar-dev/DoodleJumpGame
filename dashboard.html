@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qoder - Context-Aware Coding Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+            font-family: 'Orbitron', monospace;
+            color: #00f0ff;
+            height: 100vh;
+        }
+        
+        .dashboard {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1000px;
+        }
+        
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .header {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+        }
+        
+        .qoder-logo {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #00f0ff;
+            text-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+        
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 15px #ffffff;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0ff;
+            font-family: 'Space Mono', monospace;
+            opacity: 0.9;
+        }
+        
+        .repo-map {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            width: 800px;
+            height: 600px;
+        }
+        
+        .class-node {
+            position: absolute;
+            width: 180px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(100, 0, 255, 0.2));
+            border: 2px solid #00f0ff;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .class-node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #00f0ff;
+        }
+        
+        .class-node h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+        
+        .class-node p {
+            font-size: 0.8rem;
+            color: #a0a0ff;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .game-node {
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+        
+        .entity-node {
+            top: 300px;
+            left: 100px;
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+        
+        .platform-node {
+            top: 300px;
+            right: 100px;
+            border-color: #45b7d1;
+            box-shadow: 0 0 20px rgba(69, 183, 209, 0.5);
+        }
+        
+        .multiplayer-node {
+            bottom: 100px;
+            left: 150px;
+            border-color: #96ceb4;
+            box-shadow: 0 0 20px rgba(150, 206, 180, 0.5);
+        }
+        
+        .server-node {
+            bottom: 100px;
+            right: 150px;
+            border-color: #feca57;
+            box-shadow: 0 0 20px rgba(254, 202, 87, 0.5);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00f0ff, transparent);
+            transform-origin: left center;
+            animation: flowEnergy 2s ease-in-out infinite;
+            z-index: 2;
+        }
+        
+        @keyframes flowEnergy {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; box-shadow: 0 0 10px #00f0ff; }
+        }
+        
+        .floating-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 240, 255, 0.3);
+            border: 1px solid #00f0ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: float 4s ease-in-out infinite;
+            backdrop-filter: blur(5px);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .icon-1 { top: 20%; left: 15%; animation-delay: 0s; }
+        .icon-2 { top: 30%; right: 20%; animation-delay: 1s; }
+        .icon-3 { bottom: 25%; left: 10%; animation-delay: 2s; }
+        .icon-4 { bottom: 15%; right: 15%; animation-delay: 3s; }
+        
+        .stats-panel {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00f0ff;
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            min-width: 250px;
+        }
+        
+        .stats-panel h4 {
+            color: #00f0ff;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .stat-label {
+            color: #a0a0ff;
+        }
+        
+        .stat-value {
+            color: #00f0ff;
+            font-weight: 700;
+        }
+        
+        .analysis-panel {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00f0ff;
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+        }
+        
+        .analysis-panel h4 {
+            color: #00f0ff;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .insight {
+            background: rgba(0, 240, 255, 0.1);
+            border-left: 3px solid #00f0ff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: #ffffff;
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00f0ff;
+            border-radius: 50%;
+            animation: particleFloat 6s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="grid-background"></div>
+        
+        <div class="particles" id="particles"></div>
+        
+        <div class="header">
+            <div class="qoder-logo">QODER</div>
+            <div class="main-title">Context-Aware Coding</div>
+            <div class="subtitle">Understands your entire game project.</div>
+        </div>
+        
+        <div class="repo-map">
+            <!-- Class Nodes -->
+            <div class="class-node game-node">
+                <h3>Game.java</h3>
+                <p>JPanel • ActionListener<br>Main Game Loop<br>Input Handling</p>
+            </div>
+            
+            <div class="class-node entity-node">
+                <h3>Entity.java</h3>
+                <p>Player/Doodler<br>Physics Body<br>Collision Detection</p>
+            </div>
+            
+            <div class="class-node platform-node">
+                <h3>Platform.java</h3>
+                <p>Game Objects<br>Positioning<br>Boundaries</p>
+            </div>
+            
+            <div class="class-node multiplayer-node">
+                <h3>MultiplayerGame.java</h3>
+                <p>Network Gaming<br>Synchronized State<br>Player Management</p>
+            </div>
+            
+            <div class="class-node server-node">
+                <h3>GameServer.java</h3>
+                <p>Socket Server<br>Client Handling<br>Game Broadcasting</p>
+            </div>
+            
+            <!-- Connection Lines (will be added by JavaScript) -->
+        </div>
+        
+        <!-- Floating Icons -->
+        <div class="floating-icon icon-1">🎮</div>
+        <div class="floating-icon icon-2">⚡</div>
+        <div class="floating-icon icon-3">🔗</div>
+        <div class="floating-icon icon-4">🎯</div>
+        
+        <div class="stats-panel">
+            <h4>Project Analysis</h4>
+            <div class="stat-item">
+                <span class="stat-label">Classes:</span>
+                <span class="stat-value">10</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Game Logic:</span>
+                <span class="stat-value">Java Swing</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Architecture:</span>
+                <span class="stat-value">Entity-Component</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Multiplayer:</span>
+                <span class="stat-value">TCP Sockets</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Physics:</span>
+                <span class="stat-value">Custom 2D</span>
+            </div>
+        </div>
+        
+        <div class="analysis-panel">
+            <h4>Qoder Insights</h4>
+            <div class="insight">
+                🧠 Detected MVC pattern in Game.java with view and controller logic
+            </div>
+            <div class="insight">
+                🎯 Entity.java serves as both player and platform base class
+            </div>
+            <div class="insight">
+                🌐 Network layer properly separated in GameServer.java
+            </div>
+            <div class="insight">
+                🎵 Sound integration through SoundPlayer.java
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Create connection lines between nodes
+        function createConnectionLine(fromSelector, toSelector) {
+            const fromNode = document.querySelector(fromSelector);
+            const toNode = document.querySelector(toSelector);
+            
+            if (!fromNode || !toNode) return;
+            
+            const fromRect = fromNode.getBoundingClientRect();
+            const toRect = toNode.getBoundingClientRect();
+            
+            const fromX = fromRect.left + fromRect.width / 2;
+            const fromY = fromRect.top + fromRect.height / 2;
+            const toX = toRect.left + toRect.width / 2;
+            const toY = toRect.top + toRect.height / 2;
+            
+            const length = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+            const angle = Math.atan2(toY - fromY, toX - fromX) * 180 / Math.PI;
+            
+            const line = document.createElement('div');
+            line.className = 'connection-line';
+            line.style.width = length + 'px';
+            line.style.left = fromX + 'px';
+            line.style.top = fromY + 'px';
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.transformOrigin = '0 50%';
+            
+            document.querySelector('.repo-map').appendChild(line);
+        }
+        
+        // Create connections between related classes
+        setTimeout(() => {
+            createConnectionLine('.game-node', '.entity-node');
+            createConnectionLine('.game-node', '.platform-node');
+            createConnectionLine('.multiplayer-node', '.server-node');
+            createConnectionLine('.game-node', '.multiplayer-node');
+        }, 100);
+        
+        // Create floating particles
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+            
+            document.getElementById('particles').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+        
+        // Create particles continuously
+        setInterval(createParticle, 300);
+        
+        // Add hover effects to class nodes
+        document.querySelectorAll('.class-node').forEach(node => {
+            node.addEventListener('mouseenter', () => {
+                node.style.transform = 'scale(1.1) rotateY(5deg)';
+                node.style.zIndex = '10';
+            });
+            
+            node.addEventListener('mouseleave', () => {
+                node.style.transform = 'scale(1) rotateY(0deg)';
+                node.style.zIndex = '5';
+            });
+        });
+        
+        // Animate stats counters
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                element.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Initialize animations
+        window.addEventListener('load', () => {
+            const classCount = document.querySelector('.stat-value');
+            if (classCount && classCount.textContent === '10') {
+                classCount.textContent = '0';
+                animateValue(classCount, 0, 10, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
